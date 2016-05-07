@@ -1,0 +1,8 @@
+# year, Housing DataBook 2BR, my overall
+1979 435 375
+1984 650 600
+2001 2400 2250
+
+# Linear Model:       y = 0.9498 x - 28.38
+# Alternately:        y = 0.755447 * x ** 1.02778
+# The two are so close to each other that it hardly matters

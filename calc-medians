@@ -1,0 +1,52 @@
+#!/usr/bin/perl
+
+use strict;
+
+my $prev = 0;
+for my $file (<[12]*>) {
+	if ($file =~ /^\d\d\d\d$/) {
+		if ($file != $prev + 1) {
+			print "\n";
+		}
+		$prev = $file;
+
+		my @data = ();
+
+		open(IN, "$file");
+		while (<IN>) {
+			if (/^[0-9]/) {
+				chomp;
+				push @data, $_;
+			}
+		}
+		close(IN);
+
+		@data = sort {$a <=> $b} @data;
+		print "$file $data[$#data/2] $#data\n";
+	}
+}
+
+print "\n";
+
+for my $file (<craigslist-*>) {
+	if ($file =~ /(\d\d\d\d)$/) {
+		my $year = $1;
+		my @data = ();
+		my %seen = ();
+
+		open(IN, "$file");
+		while (<IN>) {
+			next if $seen{$_};
+			$seen{$_} = 1;
+
+			if (/\$([0-9]+)/) {
+				chomp;
+				push @data, $1;
+			}
+		}
+		close(IN);
+
+		@data = sort {$a <=> $b} @data;
+		print "$year $data[$#data/2] $#data\n";
+	}
+}

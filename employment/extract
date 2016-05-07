@@ -1,0 +1,13 @@
+#!/bin/bash
+
+for i in {1975..2000}
+do
+	cat "sic.$i.annual.by_area/sic.$i.annual 06075 (San Francisco County, California).csv" | grep 'Total Covered' | awk -F, '{ print $6, $17, $18 }'
+	# unzip -p "sic_"$i"_annual_by_area.zip" "sic.$i.annual.by_area/sic.$i.annual 06075 (San Francisco County, California).csv" | grep 'Total Covered' | awk -F, '{ print $6, $17, $18 }'
+done
+
+for i in {2001..2014}
+do
+	cat $i".annual.by_area/$i.annual 06075 San Francisco County, California.csv" | grep "Total Covered" | awk -F, '{print $6, $18, $19}' | tr -d '"'
+	# unzip -p $i"_annual_by_area.zip" $i".annual.by_area/$i.annual 06075 San Francisco County, California.csv" | grep "Total Covered" | awk -F, '{print $6, $18, $19}' | tr -d '"'
+done

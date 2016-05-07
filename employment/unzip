@@ -1,0 +1,17 @@
+#!/bin/bash
+
+for i in {1975..2000}
+do
+	unzip "sic_"$i"_annual_by_area.zip" "sic.$i.annual.by_area/sic.$i.annual 06075 (San Francisco County, California).csv"
+	unzip "sic_"$i"_annual_by_area.zip" "sic.$i.annual.by_area/sic.$i.annual 06001 (Alameda County, California).csv"
+	unzip "sic_"$i"_annual_by_area.zip" "sic.$i.annual.by_area/sic.$i.annual 06085 (Santa Clara County, California).csv"
+	unzip "sic_"$i"_annual_by_area.zip" "sic.$i.annual.by_area/sic.$i.annual 06081 (San Mateo County, California).csv"
+done
+
+for i in {2001..2014}
+do
+	unzip $i"_annual_by_area.zip" $i".annual.by_area/$i.annual 06075 San Francisco County, California.csv"
+	unzip $i"_annual_by_area.zip" $i".annual.by_area/$i.annual 06001 Alameda County, California.csv"
+	unzip $i"_annual_by_area.zip" $i".annual.by_area/$i.annual 06085 Santa Clara County, California.csv"
+	unzip $i"_annual_by_area.zip" $i".annual.by_area/$i.annual 06081 San Mateo County, California.csv"
+done

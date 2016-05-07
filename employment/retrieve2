@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for i in {2001..2014}
+do
+	curl -L -O "http://www.bls.gov/cew/data/files/"$i"/csv/"$i"_annual_by_area.zip"
+done

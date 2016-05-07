@@ -1,0 +1,12 @@
+set terminal postscript
+set dummy units, employment, payroll, cpi
+
+f(units, employment, payroll, cpi) = m * units ** ue * employment ** ee * payroll ** pe * cpi ** ce
+
+set logscale y
+
+FIT_LIMIT=1e-7
+fit log(f(units, employment, payroll, cpi)) "combined" using 3:5:6:7:(log($2)) via m, ue, ee, pe, ce
+set xlabel "Year"
+set ylabel "Median advertised asking rent"
+plot "combined" using 1:2 title "Actual", "combined" using 1:(f($3, $5, $6, $7)) with lines title "Predicted"

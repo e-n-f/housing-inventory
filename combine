@@ -1,0 +1,51 @@
+#!/usr/bin/perl
+
+open(IN, "housing-inventory");
+while (<IN>) {
+	chomp;
+	($year, $built, $demolished, $converted, $net, $price) = split(/ /);
+
+	# Scale 2BR median to overall median
+	if ($price ne "") {
+		$price = $price * 0.9498 - 28.38;
+		$price{$year} = $price;
+	}
+
+	$net{$year} = $net;
+}
+close(IN);
+
+open(IN, "medians");
+while (<IN>) {
+	chomp;
+	($year, $price) = split(/ /);
+	$price{$year} = $price;
+}
+close(IN);
+
+$total = 379597;
+for ($year = 2014; $year >= 1960; $year--) {
+	$total{$year} = $total;
+	$total -= $net{$year};
+}
+
+open(IN, "employment/employment");
+while (<IN>) {
+	chomp;
+	($year, $employment, $payroll) = split(/ /);
+	$employment{$year} = $employment;
+	$payroll{$year} = $payroll;
+}
+close(IN);
+
+open(IN, "cpi/cpi");
+while (<IN>) {
+	chomp;
+	($year, $cpi) = split(/ /);
+	$cpi{$year} = $cpi;
+}
+close(IN);
+
+for ($year = 1975; $year <= 2014; $year++) {
+	print "$year $price{$year} $total{$year} $net{$year} $employment{$year} $payroll{$year} $cpi{$year}\n";
+}

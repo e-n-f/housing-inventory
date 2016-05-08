@@ -1,0 +1,22 @@
+set terminal postscript
+set dummy units, employment, payroll
+
+f(units, employment, payroll) = m * units ** ue * employment ** ee * payroll ** pe
+
+set logscale y
+
+# From previous run:
+#
+# Final set of parameters            Asymptotic Standard Error
+# =======================            ==========================
+# m               = 6.87298          +/- 100.2        (1457%)
+# ue              = -2.28762         +/- 1.177        (51.44%)
+# ee              = -0.308601        +/- 0.2731       (88.49%)
+# pe              = 1.7557           +/- 0.2116       (12.05%)
+# ce              = -0.698124        +/- 0.2503       (35.86%)
+
+FIT_LIMIT=1e-7
+fit log(f(units, employment, payroll)) "combined" using 3:5:($6 / $7):(log($2 /$7)) via m, ue, ee, pe
+set xlabel "Year"
+set ylabel "CPI-adjusted median advertised asking rent"
+plot "combined" using 1:($2 / $7) title "Actual", "combined" using 1:(f($3, $5, $6 / $7)) with lines title "Predicted"

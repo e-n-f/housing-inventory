@@ -1,0 +1,12 @@
+set terminal postscript
+
+f(x) = fm * x ** fa + fb
+g(x) = gm * x ** ga + gb
+
+fit log(f(x)) "combined" using 4:(log($8/$2)) via fm, fa, fb
+fit log(g(x)) "combined" using 4:(log($9/$2)) via gm, ga, gb
+
+set logscale y
+set yrange [1.0/3:3]
+
+plot "combined" using 4:($8 / $2), "combined" using 4:($9 / $2), f(x), g(x)

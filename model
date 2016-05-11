@@ -1,22 +1,25 @@
 set terminal postscript
-set dummy units, employment, payroll, cpi
+set dummy units, per_capita_wages, employment, year
 
-f(units, employment, payroll, cpi) = m * units ** ue * employment ** ee * payroll ** pe * cpi ** ce
+f(units, per_capita_wages, employment, year) = m * units ** units_e * per_capita_wages ** pci_e * employment ** employment_e * year ** year_e
 
 set logscale y
 
-# From previous run:
-#
-# Final set of parameters            Asymptotic Standard Error
-# =======================            ==========================
-# m               = 6.87298          +/- 100.2        (1457%)
-# ue              = -2.28762         +/- 1.177        (51.44%)
-# ee              = -0.308601        +/- 0.2731       (88.49%)
-# pe              = 1.7557           +/- 0.2116       (12.05%)
-# ce              = -0.698124        +/- 0.2503       (35.86%)
+# 1: year
+# 2: median rent
+# 3: housing units extant
+# 4: net new housing units
+# 5: employment in city
+# 6: total wages of these employees
+# 7: consumer price index
 
-FIT_LIMIT=1e-7
-fit log(f(units, employment, payroll, cpi)) "combined" using 3:5:6:7:(log($2)) via m, ue, ee, pe, ce
+FIT_LIMIT=1e-6
+fit log(f(units, per_capita_wages, employment, year)) "combined" using 3:($6 / $7 / $5):5:1:(log($2 / $7)) via m, units_e, pci_e, employment_e, year_e
 set xlabel "Year"
-set ylabel "Median advertised asking rent"
-plot "combined" using 1:2 title "Actual", "combined" using 1:(f($3, $5, $6, $7)) with lines title "Predicted"
+
+set ylabel "CPI-adjusted median advertised asking rent"
+set xrange [1975:2016]
+plot "combined" using 1:($2 / $7) title "Actual", "combined" using 1:(f($3, $6 / $7 / $5, $5, $1)) with lines title "Predicted"
+
+set ylabel "Unexplained variation in rent"
+plot "combined" using 1:($2 / $7 / f($3, $6 / $7 / $5, $5, $1)) with lines

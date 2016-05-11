@@ -1,5 +1,12 @@
 #!/usr/bin/perl
 
+open(IN, "units-by-year-sum");
+while (<IN>) {
+	chomp;
+	($year, $built) = split(/ /);
+	$net{$year} = $built;
+}
+
 open(IN, "housing-inventory");
 while (<IN>) {
 	chomp;
@@ -24,7 +31,7 @@ while (<IN>) {
 close(IN);
 
 $total = 379597;
-for ($year = 2014; $year >= 1960; $year--) {
+for ($year = 2014; $year >= 1900; $year--) {
 	$total{$year} = $total;
 	$total -= $net{$year};
 }
@@ -46,6 +53,6 @@ while (<IN>) {
 }
 close(IN);
 
-for ($year = 1975; $year <= 2014; $year++) {
-	print "$year $price{$year} $total{$year} $net{$year} $employment{$year} $payroll{$year} $cpi{$year}\n";
+for ($year = 1948; $year <= 2014; $year++) {
+	print "$year $price{$year}: $total{$year}: $net{$year}: $employment{$year}: $payroll{$year}: $cpi{$year}\n";
 }

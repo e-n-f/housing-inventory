@@ -22,7 +22,7 @@ for my $file (<[12]*>) {
 		close(IN);
 
 		@data = sort {$a <=> $b} @data;
-		print "$file $data[$#data/2] $#data $data[$#data * .9] $data[$#data * .1]\n";
+		print "$file $data[$#data/2] $#data $data[$#data * .95] $data[$#data * .05]\n";
 	}
 }
 
@@ -47,7 +47,7 @@ for my $file (<craigslist-*>) {
 		close(IN);
 
 		@data = sort {$a <=> $b} @data;
-		print "$year $data[$#data/2] $#data $data[$#data * .9] $data[$#data * .1]\n";
+		print "$year $data[$#data/2] $#data $data[$#data * .95] $data[$#data * .05]\n";
 
 	}
 }

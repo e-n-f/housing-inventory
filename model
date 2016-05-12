@@ -22,4 +22,6 @@ set xrange [1975:2016]
 plot "combined" using 1:($2 / $7) title "Actual", "combined" using 1:(f($3, $6 / $7 / $5, $5, $1)) with lines title "Predicted"
 
 set ylabel "Unexplained variation in rent"
+set yrange [2.0/3:1.5]
+set ytics (2.0/3, 1/1.25, 1, 1.25, 1.5)
 plot "combined" using 1:($2 / $7 / f($3, $6 / $7 / $5, $5, $1)) with lines

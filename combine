@@ -25,10 +25,10 @@ close(IN);
 open(IN, "medians");
 while (<IN>) {
 	chomp;
-	($year, $price, $count, $ninetieth, $tenth) = split(/ /);
+	($year, $price, $count, $p95, $p05) = split(/ /);
 	$price{$year} = $price;
-	$ninetieth{$year} = $ninetieth;
-	$tenth{$year} = $tenth;
+	$p95{$year} = $p95;
+	$p05{$year} = $p05;
 }
 close(IN);
 
@@ -56,5 +56,5 @@ while (<IN>) {
 close(IN);
 
 for ($year = 1948; $year <= 2014; $year++) {
-	print "$year $price{$year}: $total{$year}: $net{$year}: $employment{$year}: $payroll{$year}: $cpi{$year}: $ninetieth{$year}: $tenth{$year}\n";
+	print "$year $price{$year}: $total{$year}: $net{$year}: $employment{$year}: $payroll{$year}: $cpi{$year}: $p95{$year}: $p05{$year}\n";
 }

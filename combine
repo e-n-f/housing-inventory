@@ -51,10 +51,10 @@ open(IN, "cpi/cpi");
 while (<IN>) {
 	chomp;
 	($year, $cpi) = split(/ /);
-	$cpi{$year} = $cpi;
+	$cpi{$year} = $cpi / 100;
 }
 close(IN);
 
-for ($year = 1948; $year <= 2014; $year++) {
+for ($year = 1906; $year <= 2016; $year++) {
 	print "$year $price{$year}: $total{$year}: $net{$year}: $employment{$year}: $payroll{$year}: $cpi{$year}: $p95{$year}: $p05{$year}\n";
 }

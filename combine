@@ -66,20 +66,20 @@ close(IN);
 
 for ($year = 1906; $year <= 2016; $year++) {
 	if ($price{$year - 1} != 0 && $cpi{$year} != 0) {
-		$priced = ($price{$year} / $cpi{$year}) / ($price{$year - 1} / $cpi{$year - 1});
+		$priced = ($price{$year} / $cpi{$year}) / ($price{$year - 1} / $cpi{$year - 1}) - 1;
 	} else {
 		$priced = "";
 	}
 	if ($employment{$year} != 0 && $employment{$year - 1} != 0 && $cpi{$year - 1} != 0) {
-		$employmentd = $employment{$year} / $employment{$year - 1};
-		$waged = ($payroll{$year} / $cpi{$year}) / ($payroll{$year - 1} / $cpi{$year - 1});
-		$pcwd = ($payroll{$year} / $cpi{$year} / $employment{$year}) / ($payroll{$year - 1} / $employment{$year - 1} / $cpi{$year - 1});
+		$employmentd = $employment{$year} / $employment{$year - 1} - 1;
+		$waged = ($payroll{$year} / $cpi{$year}) / ($payroll{$year - 1} / $cpi{$year - 1}) - 1;
+		$pcwd = ($payroll{$year} / $cpi{$year} / $employment{$year}) / ($payroll{$year - 1} / $employment{$year - 1} / $cpi{$year - 1}) - 1;
 	} else {
 		$employmentd = "";
 		$waged = "";
 	}
 	if ($total{$year - 1} != 0) {
-		$housed = $total{$year} / $total{$year - 1};
+		$housed = $total{$year} / $total{$year - 1} - 1;
 	} else {
 		$housed = "";
 	}

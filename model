@@ -13,7 +13,7 @@ set logscale y
 set xlabel "Year"
 set ylabel "Median advertised asking rent"
 set xrange [1946:2018]
-plot "combined" using 1:2 title "Advertised rent", 78 * 1.066 ** (x - 1956)
+plot "combined" using 1:2 title "Advertised monthly rent", 78 * 1.066 ** (x - 1956)
 
 set ylabel "CPI-adjusted (1983-1984 dollars) median advertised rent"
 plot "combined" using 1:($2 / $7) title "CPI-adjusted advertised rent", 316 * 1.025 ** (x - 1956)
@@ -32,21 +32,30 @@ plot "combined" using 1:3 with steps title "Total housing units existing"
 unset yrange
 
 
+set logscale y
+set ylabel "CPI-adjusted median advertised asking rent and wages"
+set xrange [1973:2016]
+plot "combined" using 1:($2 / $7) title "Median asking monthly rent", "combined" using 1:($6 / $7 / 1000000 / 12) title "Total CPI-adjusted monthly wages paid, divided by 1 million"
 
-set dummy units, per_capita_wages, employment, year
+set logscale y
+set ylabel "CPI-adjusted median wages"
+set xrange [1973:2016]
+plot "combined" using 1:($11 / $7 / 12) title "Santa Clara County CPI-adjusted monthly wages paid", "combined" using 1:($6 / $7 / 12) title "San Francisco CPI-adjusted monthly wages paid"
 
-f(units, per_capita_wages, employment, year) = m * units ** units_e * per_capita_wages ** pci_e * employment ** employment_e * year ** year_e
+set dummy units, per_capita_wages, employment
+
+f(units, per_capita_wages, employment) = m * units ** units_e * per_capita_wages ** pci_e * employment ** employment_e
 
 unset xrange
 FIT_LIMIT=1e-6
-fit log(f(units, per_capita_wages, employment, year)) "combined" using 3:($6 / $7 / $5):5:1:(log($2 / $7)) via m, units_e, pci_e, employment_e, year_e
+fit log(f(units, per_capita_wages, employment)) "combined" using 3:($6 / $7 / $5):5:(log($2 / $7)) via m, units_e, pci_e, employment_e
 
 set logscale y
 set ylabel "CPI-adjusted median advertised asking rent"
-set xrange [1975:2016]
-plot "combined" using 1:($2 / $7) title "Actual", "combined" using 1:(f($3, $6 / $7 / $5, $5, $1)) with lines title "Predicted"
+set xrange [1973:2016]
+plot "combined" using 1:($2 / $7) title "Actual", "combined" using 1:(f($3, $6 / $7 / $5, $5)) with lines title "Predicted"
 
 set ylabel "Unexplained variation in rent"
 set yrange [2.0/3:1.5]
 set ytics (2.0/3, 1/1.25, 1, 1.25, 1.5)
-plot "combined" using 1:($2 / $7 / f($3, $6 / $7 / $5, $5, $1)) with lines
+plot "combined" using 1:($2 / $7 / f($3, $6 / $7 / $5, $5)) with lines

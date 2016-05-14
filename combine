@@ -47,6 +47,15 @@ while (<IN>) {
 }
 close(IN);
 
+open(IN, "employment/employment-sc");
+while (<IN>) {
+	chomp;
+	($year, $employment, $payroll) = split(/ /);
+	$employment_sc{$year} = $employment;
+	$payroll_sc{$year} = $payroll;
+}
+close(IN);
+
 open(IN, "cpi/cpi");
 while (<IN>) {
 	chomp;
@@ -56,5 +65,5 @@ while (<IN>) {
 close(IN);
 
 for ($year = 1906; $year <= 2016; $year++) {
-	print "$year $price{$year}: $total{$year}: $net{$year}: $employment{$year}: $payroll{$year}: $cpi{$year}: $p95{$year}: $p05{$year}\n";
+	print "$year $price{$year}, $total{$year}, $net{$year}, $employment{$year}, $payroll{$year}, $cpi{$year}, $p95{$year}, $p05{$year}, $employment_sc{$year}, $payroll_sc{$year}\n";
 }

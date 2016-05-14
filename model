@@ -42,18 +42,40 @@ set ylabel "CPI-adjusted median wages"
 set xrange [1973:2016]
 plot "combined" using 1:($11 / $7 / 12) title "Santa Clara County CPI-adjusted monthly wages paid", "combined" using 1:($6 / $7 / 12) title "San Francisco CPI-adjusted monthly wages paid"
 
-set dummy units, per_capita_wages, employment
+set dummy per_capita_wages, employment
 
-f(units, per_capita_wages, employment) = m * units ** units_e * per_capita_wages ** pci_e * employment ** employment_e
+f(per_capita_wages, employment) = m * per_capita_wages ** pcw_e * employment ** employment_e
+
+m               = 2.03118e-11
+pcw_e           = 1.35374
+employment_e    = 1.31782
 
 unset xrange
 FIT_LIMIT=1e-6
-fit log(f(units, per_capita_wages, employment)) "combined" using 3:($6 / $7 / $5):5:(log($2 / $7)) via m, units_e, pci_e, employment_e
+fit log(f(per_capita_wages, employment)) "combined" using ($6 / $7 / $5):5:(log($2 / $7)) via m, pcw_e, employment_e
 
 set logscale y
 set ylabel "CPI-adjusted median advertised asking rent"
 set xrange [1973:2016]
-plot "combined" using 1:($2 / $7) title "Actual", "combined" using 1:(f($3, $6 / $7 / $5, $5)) with lines title "Predicted"
+plot "combined" using 1:($2 / $7) title "Median asking monthly rent", "combined" using 1:(f($6 / $7 / $5, $5)) with lines title "2.03118e-11 * wages ** 1.35374 * employment ** 1.31782"
+
+set dummy units, per_capita_wages, employment
+
+f(units, per_capita_wages, employment) = m * units ** units_e * per_capita_wages ** pcw_e * employment ** employment_e
+
+m               = 0.377216
+units_e         = -2.52214
+pcw_e           = 1.89709
+employment_e    = 1.54156
+
+unset xrange
+FIT_LIMIT=1e-6
+fit log(f(units, per_capita_wages, employment)) "combined" using 3:($6 / $7 / $5):5:(log($2 / $7)) via m, units_e, pcw_e, employment_e
+
+set logscale y
+set ylabel "CPI-adjusted median advertised asking rent"
+set xrange [1973:2016]
+plot "combined" using 1:($2 / $7) title "Median asking monthly rent", "combined" using 1:(f($3, $6 / $7 / $5, $5)) with lines title "0.377216 * units ** -2.52214 * wages ** 1.89709 * employment ** 1.54156"
 
 set ylabel "Unexplained variation in rent"
 set yrange [2.0/3:1.5]

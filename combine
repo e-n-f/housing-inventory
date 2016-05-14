@@ -65,5 +65,24 @@ while (<IN>) {
 close(IN);
 
 for ($year = 1906; $year <= 2016; $year++) {
-	print "$year $price{$year}, $total{$year}, $net{$year}, $employment{$year}, $payroll{$year}, $cpi{$year}, $p95{$year}, $p05{$year}, $employment_sc{$year}, $payroll_sc{$year}\n";
+	if ($price{$year - 1} != 0 && $cpi{$year} != 0) {
+		$priced = ($price{$year} / $cpi{$year}) / ($price{$year - 1} / $cpi{$year - 1});
+	} else {
+		$priced = "";
+	}
+	if ($employment{$year} != 0 && $employment{$year - 1} != 0 && $cpi{$year - 1} != 0) {
+		$employmentd = $employment{$year} / $employment{$year - 1};
+		$waged = ($payroll{$year} / $cpi{$year}) / ($payroll{$year - 1} / $cpi{$year - 1});
+		$pcwd = ($payroll{$year} / $cpi{$year} / $employment{$year}) / ($payroll{$year - 1} / $employment{$year - 1} / $cpi{$year - 1});
+	} else {
+		$employmentd = "";
+		$waged = "";
+	}
+	if ($total{$year - 1} != 0) {
+		$housed = $total{$year} / $total{$year - 1};
+	} else {
+		$housed = "";
+	}
+
+	print "$year $price{$year}, $total{$year}, $net{$year}, $employment{$year}, $payroll{$year}, $cpi{$year}, $p95{$year}, $p05{$year}, $employment_sc{$year}, $payroll_sc{$year}, $priced, $employmentd, $waged, $housed, $pcwd\n";
 }

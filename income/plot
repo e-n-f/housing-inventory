@@ -1,0 +1,59 @@
+set terminal postscript color
+
+cdf(x) = a * (.5 + .5 * erf((log(x) - u) / (sqrt(2) * o))) + a1 * (.5 + .5 * erf((log(x) - u1) / (sqrt(2) * o1)))
+
+pdf(x) = a * exp(-(log(x) - u) ** 2 / (2 * o ** 2)) / (x * o * sqrt(2 * pi)) + a1 * exp(-(log(x) - u1) ** 2 / (2 * o1 ** 2)) / (x * o1 * sqrt(2 * pi))
+
+# a               = 8.13403e+06
+# u               = 8.78972         -1.2
+# o               = 0.389751       
+# a1              = 7.05315e+06    
+# u1              = 8.46656         - 1.2
+# o1              = 1.103          
+# 
+# fit cdf(x) "sum-1960-cities" using ($1 / .298):2 via a, u, o, a1, u1, o1
+# #plot "sum-1960-cities" using ($1 / .298):2, cdf(x)
+# set yrange [0:4e-5]
+# set xrange [1:60000]
+# plot pdf(x)
+
+a               = 86914.2 
+u               = 9.55829  + .529
+o               = 1.02478 
+a1              = 239798  
+u1              = 11.1785  + .529
+o1              = 0.690149
+
+unset xrange
+unset yrange
+# 1.698 is CPI adjustment in 2000
+fit cdf(x) "income-2000-sf" using ($4):2 via a, u, o, a1, u1, o1
+# fit cdf(x) "income-2000-sf" using ($4 / 1.698):2 via a, u, o, a1, u1, o1
+set logscale x
+#plot "income-2000-sf" using ($4 / 1.698):2, cdf(x)
+plot "income-2000-sf" using ($4):2, cdf(x)
+unset logscale x
+set xrange [1:100000]
+set xlabel "Annual income (in 1999 dollars)"
+set ylabel "Number of SF households with each income"
+plot pdf(x) title "", "income-2000-sf" using 3:($1 / ($4 - $3)) with steps title "Census 2000 reported household income"
+
+# sort -n ../2001 | grep '^[0-9]' > 2001-sort
+# cat 2001-sort | awk '{sum[int($1 / 100) * 100]++} END { for (i in sum) { print i, sum[i] }}' | sort -n > 2001-by-100
+
+a1 = 0
+a = 600
+u = log(2000)
+o = log(2)
+
+unset xrange
+fit cdf(x) "2001-sort" using 1:0 via a, u, o
+set logscale x
+plot "2001-sort" using 1:0, cdf(x)
+unset logscale x
+
+set xlabel "Monthly rent (in 2001 dollars)"
+set ylabel "Number of apartments listed with each rent"
+set xrange [0:4000]
+plot pdf(x) title "", "2001-by-100" using 1:($2 / 100) with steps title "Rent in 2001 advertised in San Francisco Chronicle"
+

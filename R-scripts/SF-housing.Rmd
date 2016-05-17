@@ -1,0 +1,89 @@
+---
+title: "SF Housing"
+author: "Thomas Lumley"
+date: "17 May 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data source
+
+These data come from [Eric Fischer's github](https://github.com/ericfischer/housing-inventory), and resulted from some fairly obsessive data collection described [here](https://experimental-geography.blogspot.co.nz/2016/05/employment-construction-and-cost-of-san.html)
+
+My aim is to provide better graphs and some slightly different models
+
+### Reading the data
+Unfortunately, while most of the data file is comma-separated, the first two columns are separated only by a space, so we need a bit of gymnastics
+```{r}
+combined<-read.table("../combined",sep=",")
+combined<-combined[,1:6]
+year<-as.integer(gsub(" .*","",as.character(combined[,1])))
+medrent<-as.numeric(gsub("^[0-9]+","",as.character(combined[,1])))
+SF<-cbind(year=year,median_rent=medrent, combined[,-1])
+names(SF)<-c("year","median_rent","housing_units","net_new_housing","employment","total_wages","CPI")
+head(SF)
+summary(SF)
+```
+
+## Trends
+
+Nominal rental rates
+```{r}
+plot(median_rent~year, data=SF, type="p",log="y")
+with(SF, lines(supsmu(year,median_rent),col="purple",lwd=2))
+```
+
+Real rental rates, after 1948, with a scatterplot smoother
+```{r}
+SF$real84_median_rent<-with(SF,median_rent/CPI)
+plot(real84_median_rent~year, data=subset(SF, year>=1948), type="p",log="y",
+     xlab="year",ylab="Median rent (1983 dollars)")
+with(subset(SF,year>=1948), lines(supsmu(year,real84_median_rent),col="purple",lwd=2))
+```
+
+With trend line, getting rid of years with basically no data
+```{r}
+SFok<-subset(SF, year>=1948 & year <=2015)
+SFok$real84_median_rent<-with(SFok,median_rent/CPI)
+plot(real84_median_rent~year, data=SFok, type="p",log="y",
+     xlab="year",ylab="Median rent (1983 dollars)")
+with(SFok, lines(supsmu(year,real84_median_rent),col="sienna",lwd=2))
+cat("annual increase=",
+    exp(coef(trend_model<-glm(real84_median_rent~year,family=gaussian(log),data=SFok))[2]))
+with(SFok, lines(year, fitted(trend_model),lty=2,col="blue"))
+legend("bottomright",lty=c(1,2),col=c("sienna","blue"),
+       bty="n",legend=c("smoother","constant real % increase"))
+```
+
+## Models
+
+Eric Fischer used a multiplicative model for powers of explanatory variables, or more-or-less equivalently, a linear model for logarithms. Also, he uses `log10` rather than `log`
+```{r}
+pricemodel<-lm(log10(real84_median_rent)~log10(housing_units)+log10(employment)+log10(total_wages/CPI),
+               data=SFok,na.action=na.exclude)
+summary(pricemodel)
+plot(real84_median_rent~year, data=SFok, type="p",log="y",
+     xlab="year",ylab="Median rent (1983 dollars)")
+lines(SFok$year, 10^(fitted(pricemodel)),col="purple")
+```
+
+Not quite what he found: maybe due to minimising squared error on the log scale rather than the raw scale?
+```{r}
+pricemodel2<-glm(real84_median_rent~log10(housing_units)+log10(employment)+log10(total_wages/CPI),
+               data=SFok,na.action=na.exclude,family=gaussian(log))
+summary(pricemodel2)
+coef(pricemodel2)/log(10)
+plot(real84_median_rent~year, data=SFok, type="p",log="y",
+     xlab="year",ylab="Median rent (1983 dollars)",xlim=c(1975,2015))
+lines(SFok$year, 10^(fitted(pricemodel)),col="purple")
+lines(SFok$year, (fitted(pricemodel2)),col="forestgreen")
+legend("bottomright",lty=1,col=c("purple","forestgreen"),
+       legend=c("fit on log scale","fit on raw scale"),bty="n")
+```
+
+Still not quite the same, but close enough.
+
+As Eric found, San Francisco real median asking prices for rentals have been going up about 2.5% per year since the 1950s,  and can be modelled quite accurately since 1975 using employment, real salaries and wages, and number of housing units.

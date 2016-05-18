@@ -1,0 +1,3 @@
+set terminal postscript color
+set logscale y
+plot "asking-vs-census" using 1:3 with lines title "Census reported median rent", "asking-vs-census" using 1:2 with lines title "Advertised median rent", "asking-vs-census" using 1:2 title "", "asking-vs-census" using 1:3 title ""

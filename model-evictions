@@ -1,0 +1,8 @@
+set terminal postscript color
+
+set xlabel "Net new construction per year"
+set ylabel "Evictions per year"
+undefine m, a, b
+f(x) = m * x ** a + b
+fit f(x) "combined" using 4:17 via m, a, b
+plot "combined" using 4:17 title "", f(x)

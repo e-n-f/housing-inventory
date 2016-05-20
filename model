@@ -77,7 +77,13 @@ set ylabel "CPI-adjusted median advertised asking rent"
 set xrange [1973:2016]
 plot "combined" using 1:($2 / $7) title "Median asking monthly rent", "combined" using 1:(f($3, $6 / $7 / $5, $5)) with lines title "0.377216 * units ** -2.52214 * wages ** 1.89709 * employment ** 1.54156"
 
-set ylabel "Unexplained variation in rent"
-set yrange [2.0/3:1.5]
-set ytics (2.0/3, 1/1.25, 1, 1.25, 1.5)
-plot "combined" using 1:($2 / $7 / f($3, $6 / $7 / $5, $5)) with lines
+unset xrange
+FIT_LIMIT=1e-6
+set dummy units, per_capita_wages, employment, interest
+f(units, per_capita_wages, employment, interest) = m * units ** units_e * per_capita_wages ** pcw_e * employment ** employment_e * interest ** interest_e
+fit log(f(units, per_capita_wages, employment, interest)) "combined" using 3:($6 / $7 / $5):5:18:(log($2 / $7)) via m, units_e, pcw_e, employment_e, interest_e
+
+set logscale y
+set ylabel "CPI-adjusted median advertised asking rent"
+set xrange [1973:2016]
+plot "combined" using 1:($2 / $7) title "Median asking monthly rent", "combined" using 1:(f($3, $6 / $7 / $5, $5, $18)) with lines 

@@ -8,9 +8,10 @@ do
 	cat "sic.$i.annual.by_area/sic.$i.annual 06075 (San Francisco County, California).csv" |
 	grep 'County, 2-digit SIC.*All establishment sizes' |
 	./csv  |
-	awk -F, '($15 != 0) {print $6 "," $15 "," $16 "," $16 / $15 "," $11}' |
+	awk -F, '($15 != 0) {print $6 "," $15 "," $16 "," $16 / $15 ",zzz " $11}' |
 	sort -t, -n -k4 |
-	awk -F, 'BEGIN {prev = 0} {people_sum += $2; print $2, people_sum, prev, $4, $5; prev = $4}' > distrib-$i
+	awk -F, 'BEGIN {prev = 0} {people_sum += $2; print $2, people_sum, prev, $4, $5; prev = $4}' |
+	sed 's/zzz //' > distrib-$i
 done
 
 for i in {1984..2000}
@@ -19,9 +20,10 @@ do
 	cat "sic.$i.annual.by_area/sic.$i.annual 06075 (San Francisco County, California).csv" |
 	grep 'County, 4-digit SIC.*All establishment sizes' |
 	./csv  |
-	awk -F, '($15 != 0) {print $6 "," $15 "," $16 "," $16 / $15 "," $11}' |
+	awk -F, '($15 != 0) {print $6 "," $15 "," $16 "," $16 / $15 ",zzz " $11}' |
 	sort -t, -n -k4 |
-	awk -F, 'BEGIN {prev = 0} {people_sum += $2; print $2, people_sum, prev, $4, $5; prev = $4}' > distrib-$i
+	awk -F, 'BEGIN {prev = 0} {people_sum += $2; print $2, people_sum, prev, $4, $5; prev = $4}' |
+	sed 's/zzz //' > distrib-$i
 done
 
 for i in {2001..2014}
@@ -30,9 +32,10 @@ do
 	cat $i".annual.by_area/$i.annual 06075 San Francisco County, California.csv" |
 	grep 'County, NAICS 6-digit -- by ownership sector.*All establishment sizes' |
 	./csv |
-	awk -F, '($15 != 0) {print $6 "," $15 "," $16 "," $16 / $15 "," $11}' |
+	awk -F, '($15 != 0) {print $6 "," $15 "," $16 "," $16 / $15 ",zzz " $11}' |
 	sort -t, -n -k4 |
-	awk -F, 'BEGIN {prev = 0} {people_sum += $2; print $2, people_sum, prev, $4, $5; prev = $4}' > distrib-$i
+	awk -F, 'BEGIN {prev = 0} {people_sum += $2; print $2, people_sum, prev, $4, $5; prev = $4}' |
+	sed 's/zzz //' > distrib-$i
 done
 
 

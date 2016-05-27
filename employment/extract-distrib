@@ -11,7 +11,7 @@ do
 	awk -F, '($15 != 0) {print $6 "," $15 "," $16 "," $16 / $15 ",zzz " $11}' |
 	sort -t, -n -k4 |
 	awk -F, 'BEGIN {prev = 0} {people_sum += $2; print $2, people_sum, prev, $4, $5; prev = $4}' |
-	sed 's/zzz //' > distrib-$i
+	sed 's/zzz //' | ./join-cpi $i > distrib-$i
 done
 
 for i in {1984..2000}
@@ -23,7 +23,7 @@ do
 	awk -F, '($15 != 0) {print $6 "," $15 "," $16 "," $16 / $15 ",zzz " $11}' |
 	sort -t, -n -k4 |
 	awk -F, 'BEGIN {prev = 0} {people_sum += $2; print $2, people_sum, prev, $4, $5; prev = $4}' |
-	sed 's/zzz //' > distrib-$i
+	sed 's/zzz //' | ./join-cpi $i > distrib-$i
 done
 
 for i in {2001..2014}
@@ -35,7 +35,7 @@ do
 	awk -F, '($15 != 0) {print $6 "," $15 "," $16 "," $16 / $15 ",zzz " $11}' |
 	sort -t, -n -k4 |
 	awk -F, 'BEGIN {prev = 0} {people_sum += $2; print $2, people_sum, prev, $4, $5; prev = $4}' |
-	sed 's/zzz //' > distrib-$i
+	sed 's/zzz //' | ./join-cpi $i > distrib-$i
 done
 
 

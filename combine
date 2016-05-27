@@ -89,6 +89,14 @@ while (<IN>) {
 }
 close(IN);
 
+open(IN, "permits");
+while (<IN>) {
+	chomp;
+	($year, $permits) = split(/ /);
+	$permits{$year} = $permits;
+}
+close(IN);
+
 for ($year = 1906; $year <= 2016; $year++) {
 	if ($price{$year - 1} != 0 && $cpi{$year} != 0) {
 		$priced = ($price{$year} / $cpi{$year}) / ($price{$year - 1} / $cpi{$year - 1}) - 1;
@@ -109,5 +117,5 @@ for ($year = 1906; $year <= 2016; $year++) {
 		$housed = "";
 	}
 
-	print "$year, $price{$year}, $total{$year}, $net{$year}, $employment{$year}, $payroll{$year}, $cpi{$year}, $p95{$year}, $p05{$year}, $employment_sc{$year}, $payroll_sc{$year}, $priced, $employmentd, $waged, $housed, $pcwd, $evictions{$year}, $interest{$year}, $mig_in{$year}, $mig_out{$year}\n";
+	print "$year, $price{$year}, $total{$year}, $net{$year}, $employment{$year}, $payroll{$year}, $cpi{$year}, $p95{$year}, $p05{$year}, $employment_sc{$year}, $payroll_sc{$year}, $priced, $employmentd, $waged, $housed, $pcwd, $evictions{$year}, $interest{$year}, $mig_in{$year}, $mig_out{$year}, $permits{$year}\n";
 }

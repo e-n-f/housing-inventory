@@ -1,4 +1,4 @@
-set terminal postscript
+set terminal postscript color
 
 set logscale y
 

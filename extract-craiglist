@@ -1,0 +1,16 @@
+#!/usr/bin/perl
+
+while (<>) {
+	next if $seen{$_};
+	$seen{$_} = 1;
+	chomp;
+
+	if (/\$([0-9,]+)/) {
+		$price = $1;
+		$price =~ s/,//g;
+
+		if ($price > 0) {
+			print "$price $_\n";
+		}
+	}
+}

@@ -39,6 +39,9 @@ for my $file (<craigslist-*>) {
 			next if $seen{$_};
 			$seen{$_} = 1;
 
+			s/\$[0-9,]+k//ig;
+			s/\$[0-9,]+ deposit//ig;
+
 			if (/\$([0-9]+)/) {
 				chomp;
 				push @data, $1;

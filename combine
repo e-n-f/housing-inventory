@@ -32,8 +32,8 @@ while (<IN>) {
 }
 close(IN);
 
-$total = 379597;
-for ($year = 2014; $year >= 1900; $year--) {
+$total = 379597 + $net{2015} + $net{2016} + $net{2017};
+for ($year = 2017; $year >= 1900; $year--) {
 	$total{$year} = $total;
 	$total -= $net{$year};
 }

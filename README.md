@@ -36,3 +36,21 @@ repository, on the `combined` data.
 `calc-medians` computes the medians for each year in the file. It prints the
 median, 95th, and 5th percentile for each year in the dataset. These values are
 present in the `medians` file in this repository.
+
+#### Craigslist
+
+To get the Craigslist data, open the [SF rentals](https://sfbay.craigslist.org/search/sfc/apa)
+page, select all and copy/paste the page's contents into a text file. Keep copying
+every page into the same text file until done. Save this file as craigslist-YYYY-MM.
+
+All Craigslist files should be combined into one per year, via eg:
+
+```
+cat craigslist-2019-* > craigslist-2019
+```
+
+After pulling in new data, recalculate the medians:
+
+```
+./calc-medians > medians
+```
